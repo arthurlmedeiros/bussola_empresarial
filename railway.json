@@ -1,6 +1,5 @@
 {
   "build": {
-    "builder": "static",
-    "staticBuildDirectory": "public"
+    "builder": "static"
   }
 }
