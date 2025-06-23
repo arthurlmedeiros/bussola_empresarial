@@ -678,12 +678,19 @@
                                 color: '#fff',
                                 backdropColor: 'rgba(0, 0, 0, 0.7)',
                                 beginAtZero: true,
-                                min: 0, // **Inicia explicitamente em 0**
+                                min: 0, 
                                 max: 4, 
                                 stepSize: 1, 
                                 showLabelBackdrop: true,
                                 font: {
                                     size: 10
+                                },
+                                // CORREÇÃO AQUI: Garante que os rótulos 0, 1, 2, 3, 4 sejam exibidos
+                                callback: function(value, index, values) {
+                                    if (Number.isInteger(value) && value >= 0 && value <= 4) {
+                                        return value;
+                                    }
+                                    return null; 
                                 }
                             }
                         }
