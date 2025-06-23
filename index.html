@@ -1,899 +1,1097 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-  <title>A Bússola da Alta Performance - Empresarial</title>
-  <style>
-    body {
-      background-color: #000;
-      color: #fff;
-      font-family: sans-serif;
-      padding: 20px;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    input, button {
-      padding: 10px;
-      font-size: 1em;
-      margin-top: 10px;
-    }
-    button {
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      border-radius: 4px;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    button:disabled {
-      background-color: #6c757d;
-      cursor: not-allowed;
-    }
-    .hidden { display: none; }
-    label {
-      display: block;
-      margin: 8px 0;
-      cursor: pointer;
-    }
-    input[type="radio"] {
-      margin-right: 8px;
-    }
-    input[type="text"], input[type="email"] {
-      width: 100%;
-      max-width: 400px;
-      border: 1px solid #333;
-      background-color: #222;
-      color: #fff;
-      border-radius: 4px;
-    }
-    .progress-bar {
-      height: 10px;
-      background-color: #333;
-      border-radius: 5px;
-      margin-bottom: 20px;
-      overflow: hidden;
-    }
-    .progress {
-      height: 100%;
-      background-color: #007bff;
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-    .resultado-container {
-      margin-top: 20px;
-    }
-    .perfil-item { /* Mantido para possível uso, mas será mais genérico agora */
-      margin: 5px 0;
-      font-size: 1.1em;
-    }
-    .perfil-predominante { /* Este estilo será adaptado ou removido, pois não há um único predominante */
-      color: #007bff;
-      font-weight: bold;
-      font-size: 1.2em;
-    }
-    #debug-info {
-      margin-top: 20px;
-      padding: 10px;
-      background-color: #333;
-      border-radius: 4px;
-      font-family: monospace;
-      font-size: 12px;
-      white-space: pre-wrap;
-      display: none;
-    }
-    .email-status {
-      margin-top: 15px;
-      padding: 10px;
-      border-radius: 4px;
-      text-align: center;
-    }
-    .success {
-      background-color: rgba(40, 167, 69, 0.2);
-      border: 1px solid #28a745;
-    }
-    .error {
-      background-color: rgba(220, 53, 69, 0.2);
-      border: 1px solid #dc3545;
-    }
-    .warning {
-      background-color: rgba(255, 193, 7, 0.2);
-      border: 1px solid #ffc107;
-      color: #212529;
-    }
-    .perfil-detalhado { /* Será adaptado para descrições das dimensões */
-      margin-top: 30px;
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      padding: 20px;
-    }
-    .perfil-detalhado h3 {
-      color: #007bff;
-      margin-top: 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      padding-bottom: 10px;
-    }
-    .perfil-secao {
-      margin-bottom: 20px;
-    }
-    .perfil-secao h4 {
-      color: #f8f9fa;
-      margin-bottom: 8px;
-      font-size: 1.1em;
-    }
-    .perfil-secao p {
-      margin: 5px 0;
-      line-height: 1.5;
-    }
-    .loading {
-      text-align: center;
-      padding: 20px;
-    }
-    .loading::after {
-      content: '';
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid #007bff;
-      border-radius: 50%;
-      border-top-color: transparent;
-      animation: spin 1s ease-in-out infinite;
-      margin-left: 10px;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    .validation-error {
-      color: #dc3545;
-      font-size: 0.9em;
-      margin-top: 5px;
-    }
-  </style>
+    <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <title>A Bússola da Alta Performance - Empresarial</title>
+    <style>
+        /* Estilos Globais */
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fonte mais moderna */
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        h2 {
+            color: #007bff; /* Cor do título principal */
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+
+        /* Estilos de Formulário */
+        input[type="text"],
+        input[type="email"] {
+            padding: 12px;
+            font-size: 1.1em;
+            margin-top: 8px;
+            margin-bottom: 15px; /* Espaço após o input */
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #333;
+            background-color: #222;
+            color: #fff;
+            border-radius: 6px; /* Borda levemente mais arredondada */
+            box-sizing: border-box; /* Garante que padding e border não aumentem a largura total */
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus {
+            border-color: #007bff; /* Borda azul ao focar */
+            background-color: #1a1a1a; /* Escurece um pouco ao focar */
+            outline: none; /* Remove o outline padrão */
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 5px; /* Mais espaço acima do label */
+            font-size: 1.05em;
+            cursor: pointer;
+            color: #f8f9fa; /* Cor para os labels */
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1.1em;
+            margin-top: 20px; /* Mais espaço acima do botão */
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, transform 0.2s ease; /* Adiciona transform para efeito de clique */
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2); /* Sombra para o botão */
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px); /* Efeito sutil ao passar o mouse */
+        }
+
+        button:active {
+            transform: translateY(0); /* Retorna à posição original ao clicar */
+        }
+
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Utilidades */
+        .hidden {
+            display: none;
+        }
+
+        .validation-error {
+            color: #dc3545; /* Vermelho mais forte */
+            font-size: 0.9em;
+            margin-top: -10px; /* Ajusta para ficar mais próximo do input */
+            margin-bottom: 10px;
+            display: block; /* Garante que o erro fique em sua própria linha */
+        }
+
+        /* Quiz Specifics */
+        .progress-bar {
+            height: 12px; /* Um pouco mais alto */
+            background-color: #333;
+            border-radius: 6px;
+            margin-bottom: 25px; /* Mais espaço */
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .progress {
+            height: 100%;
+            background-color: #007bff;
+            width: 0%;
+            border-radius: 6px; /* Para manter as bordas arredondadas ao preencher */
+            transition: width 0.4s ease-out; /* Transição mais suave */
+        }
+
+        #question-container {
+            background-color: rgba(255, 255, 255, 0.08); /* Fundo levemente translúcido */
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+
+        #question-container p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #e9ecef; /* Cor mais clara para o texto da pergunta */
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2); /* Aumenta um pouco o rádio button */
+            cursor: pointer;
+            vertical-align: middle; /* Alinha com o texto */
+        }
+
+        label input[type="radio"] + span { /* Se você adicionar span ao redor do texto */
+            vertical-align: middle;
+        }
+
+        label {
+            display: flex; /* Para alinhar o rádio e o texto */
+            align-items: center;
+            margin: 15px 0; /* Mais espaço entre as opções */
+            font-size: 1.1em;
+            padding: 8px 0; /* Pequeno padding para área de clique */
+        }
+        
+        label:hover {
+            color: #007bff; /* Destaca a opção ao passar o mouse */
+        }
+
+        /* Resultados */
+        .resultado-container {
+            margin-top: 30px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.05); /* Fundo sutil para o container de resultado */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        #perfil-titulo {
+            color: #007bff;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        #perfil-detalhes {
+            font-size: 1.1em;
+            color: #e9ecef;
+            margin-bottom: 25px;
+        }
+
+        #perfil-detalhes ul {
+            list-style: none; /* Remove bullets padrão */
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        #perfil-detalhes li {
+            background-color: rgba(255, 255, 255, 0.08);
+            margin: 8px 0;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border-left: 3px solid #007bff; /* Linha azul para destaque */
+            text-align: left; /* Alinha o texto das listas */
+            display: flex;
+            justify-content: space-between; /* Para espaçar categoria e pontuação */
+            align-items: center;
+        }
+
+        #grafico-container {
+            width: 100%;
+            max-width: 500px; /* Limita o tamanho máximo do gráfico */
+            margin: 30px auto;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.2); /* Sombra suave para o gráfico */
+        }
+
+        /* Cores e estilos para o Chart.js (reforço no JS, mas bom ter aqui) */
+        .chartjs-render-monitor {
+            background-color: transparent !important; /* Assegura fundo transparente do canvas */
+        }
+
+        #perfil-detalhado {
+            margin-top: 30px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: left;
+        }
+
+        #perfil-detalhado h3 {
+            color: #007bff;
+            margin-top: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+
+        .perfil-secao {
+            margin-bottom: 20px;
+        }
+
+        .perfil-secao h4 {
+            color: #f8f9fa;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .perfil-secao p {
+            margin: 5px 0;
+            line-height: 1.5;
+        }
+
+        /* Status do Email */
+        .email-status {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.05em;
+        }
+
+        .success {
+            background-color: rgba(40, 167, 69, 0.25);
+            border: 1px solid #28a745;
+            color: #28a745;
+        }
+
+        .error {
+            background-color: rgba(220, 53, 69, 0.25);
+            border: 1px solid #dc3545;
+            color: #dc3545;
+        }
+
+        .warning {
+            background-color: rgba(255, 193, 7, 0.25);
+            border: 1px solid #ffc107;
+            color: #ffc107; /* Mudei para amarelo para melhor visibilidade em fundo escuro */
+        }
+
+        /* Loading Spinner */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.3em;
+            color: #007bff;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            border: 4px solid #007bff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 15px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Debug Info */
+        #debug-info {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #333;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            color: #0f0; /* Cor verde para debug */
+            border: 1px dashed #555;
+            display: none; /* Mantido oculto por padrão */
+        }
+
+        /* Responsividade Básica */
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            h2 {
+                font-size: 1.8em;
+            }
+            input[type="text"],
+            input[type="email"],
+            button {
+                font-size: 1em;
+                padding: 10px;
+            }
+            #question-container p {
+                font-size: 1em;
+            }
+            #perfil-titulo {
+                font-size: 1.6em;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h2>A Bússola da Alta Performance - Empresarial 🧠</h2>
-  
-  <div id="intro-container">
-    <label for="name">Digite seu nome completo para começar:</label><br>
-    <input type="text" id="name" placeholder="Seu nome aqui" autocomplete="name" required /><br>
-    <div id="name-error" class="validation-error hidden">Por favor, insira seu nome completo.</div>
-    
-    <label for="email">Digite seu e-mail:</label><br>
-    <input type="email" id="email" placeholder="Seu e-mail aqui" autocomplete="email" required /><br>
-    <div id="email-error" class="validation-error hidden">Por favor, insira um e-mail válido.</div>
-    
-    <button id="start-button">Começar</button>
-  </div>
+    <h2>A Bússola da Alta Performance - Empresarial 🧠</h2>
 
-  <div id="quiz" class="hidden">
-    <div class="progress-bar">
-      <div id="progress" class="progress"></div>
-    </div>
-    <div id="question-container"></div>
-  </div>
+    <div id="intro-container">
+        <label for="name">Digite seu nome completo para começar:</label>
+        <input type="text" id="name" placeholder="Seu nome aqui" autocomplete="name" required />
+        <div id="name-error" class="validation-error hidden">Por favor, insira seu nome completo.</div>
 
-  <div id="resultado-container" class="hidden resultado-container">
-    <h3 id="perfil-titulo"></h3>
-    <div id="perfil-detalhes"></div>
-    <div id="grafico-container">
-      <canvas id="graficoPerfil" width="300" height="300"></canvas>
-    </div>
-    
-    <div id="perfil-detalhado" class="perfil-detalhado"></div>
-    
-    <div id="email-status" class="email-status hidden"></div>
-    
-    <div class="container" style="margin-top: 20px;">
-      <button id="restart-button">Refazer Teste</button>
-    </div>
-    <div id="debug-info"></div>
-  </div>
-  
-  <script>
-    // Configurações e constantes
-    const CONFIG = {
-      WEBHOOK_URL: "https://primary-kh0f-zuper.up.railway.app/webhook/bussola_empresarial",
-      MAX_RETRIES: 3,
-      RETRY_DELAY: 2000,
-      EMAIL_SEND_DELAY: 1000
-    };
+        <label for="email">Digite seu e-mail:</label>
+        <input type="email" id="email" placeholder="Seu e-mail aqui" autocomplete="email" required />
+        <div id="email-error" class="validation-error hidden">Por favor, insira um e-mail válido.</div>
 
-    // Array completo com as 16 categorias/perguntas e suas opções (sem embaralhamento)
-    const categoriasBase = [
-      {
-        categoria: "LIDERANÇA",
-        opcoes: [
-          { texto: "Funcional", valor: 4 },
-          { texto: "Organizacional", valor: 3 },
-          { texto: "Líderes", valor: 2 },
-          { texto: "Comandar", valor: 1 }
-        ]
-      },
-      {
-        categoria: "ESTRUTURA",
-        opcoes: [
-          { texto: "Organograma", valor: 4 },
-          { texto: "Personograma", valor: 3 },
-          { texto: "Tribograma", valor: 2 },
-          { texto: "Eugrama", valor: 1 }
-        ]
-      },
-      {
-        categoria: "PESSOAS",
-        opcoes: [
-          { texto: "Times", valor: 4 },
-          { texto: "Colaboradores", valor: 3 },
-          { texto: "Ajudantes", valor: 2 },
-          { texto: "Voluntários", valor: 1 }
-        ]
-      },
-      {
-        categoria: "PROCESSOS",
-        opcoes: [
-          { texto: "Fluxos & Governança", valor: 4 },
-          { texto: "Fluxos Básicos", valor: 3 },
-          { texto: "Caminho", valor: 2 },
-          { texto: "Decisões", valor: 1 }
-        ]
-      },
-      {
-        categoria: "CULTURA",
-        opcoes: [
-          { texto: "Propósito", valor: 4 },
-          { texto: "Valores", valor: 3 },
-          { texto: "Comportamento", valor: 2 },
-          { texto: "Ambiente", valor: 1 }
-        ]
-      },
-      {
-        categoria: "AMBIENTE",
-        opcoes: [
-          { texto: "Dominante", valor: 4 },
-          { texto: "Competitivo", valor: 3 },
-          { texto: "Flexível", valor: 2 },
-          { texto: "Estimulante", valor: 1 }
-        ]
-      },
-      {
-        categoria: "FOCO",
-        opcoes: [
-          { texto: "Time", valor: 4 },
-          { texto: "Empresa", valor: 3 },
-          { texto: "Produto", valor: 2 },
-          { texto: "Cliente", valor: 1 }
-        ]
-      },
-      {
-        categoria: "ESTRATÉGIA",
-        opcoes: [
-          { texto: "Implementar", valor: 4 },
-          { texto: "Realizar", valor: 3 },
-          { texto: "Planejar", valor: 2 },
-          { texto: "Executar", valor: 1 }
-        ]
-      },
-      {
-        categoria: "EXPERIÊNCIA",
-        opcoes: [
-          { texto: "Excelência", valor: 4 },
-          { texto: "Satisfação", valor: 3 },
-          { texto: "Engajamento", valor: 2 },
-          { texto: "Inovação", valor: 1 }
-        ]
-      },
-      {
-        categoria: "SAÚDE",
-        opcoes: [
-          { texto: "Financeiro", valor: 4 },
-          { texto: "Físico", valor: 3 },
-          { texto: "Mental", valor: 2 },
-          { texto: "Emocional", valor: 1 }
-        ]
-      },
-      {
-        categoria: "FERRAMENTAS",
-        opcoes: [
-          { texto: "Especializadas", valor: 4 },
-          { texto: "Básicas", valor: 3 },
-          { texto: "Digitais", valor: 2 },
-          { texto: "Manuais", valor: 1 }
-        ]
-      },
-      {
-        categoria: "DADOS",
-        opcoes: [
-          { texto: "Positivos", valor: 4 },
-          { texto: "Negativos", valor: 3 },
-          { texto: "Qualitativos", valor: 2 },
-          { texto: "Quantitativos", valor: 1 }
-        ]
-      },
-      {
-        categoria: "RESULTADO",
-        opcoes: [
-          { texto: "Objetivos", valor: 4 },
-          { texto: "Metas", valor: 3 },
-          { texto: "Lucro", valor: 2 },
-          { texto: "Impacto", valor: 1 }
-        ]
-      },
-      {
-        categoria: "OBJETIVO",
-        opcoes: [
-          { texto: "Profissionalizar", valor: 4 },
-          { texto: "Otimizar", valor: 3 },
-          { texto: "Diversificar", valor: 2 },
-          { texto: "Expandir", valor: 1 }
-        ]
-      },
-      {
-        categoria: "PAPEL DO DONO",
-        opcoes: [
-          { texto: "Empreender Tudo", valor: 4 },
-          { texto: "Gerenciar Tudo", valor: 3 },
-          { texto: "Fazer Tudo", valor: 2 },
-          { texto: "Decidir Tudo", valor: 1 }
-        ]
-      },
-      {
-        categoria: "VERBO",
-        opcoes: [
-          { texto: "Dirigir", valor: 4 },
-          { texto: "Coordenar", valor: 3 },
-          { texto: "Fazer", valor: 2 },
-          { texto: "Conduzir", valor: 1 }
-        ]
-      }
-    ];
-    
-    // Variáveis globais
-    let perguntas = []; // Agora são as categorias
-    let respostas = {}; // Armazena a opção escolhida por categoria
-    let pontuacoesCategorias = {}; // Armazena a pontuação total por categoria
-    let userName = "";
-    let userEmail = "";
-    let perguntaAtual = 0;
-    let debugMode = false;
-    let resultadoAtual = null; // Armazenará os resultados processados
-    let graficoChart = null;
-    let emailEnviado = false;
-    let tentativasEnvio = 0;
+        <button id="start-button">Começar</button>
+    </div>
 
-    // Informações detalhadas sobre cada categoria (opcional, para futura expansão)
-    // No momento, não há descrições detalhadas fornecidas para cada uma das 16 categorias.
-    // Esta seção pode ser expandida no futuro se houver necessidade de explicar o que significa cada pontuação.
-    const categoriasDetalhe = {
-      'LIDERANÇA': {
-        descricao: 'Avalia o estilo e a eficácia da liderança na organização.'
-      },
-      'ESTRUTURA': {
-        descricao: 'Mede a clareza e adequação da estrutura organizacional.'
-      },
-      'PESSOAS': {
-        descricao: 'Foca na gestão de talentos e no ambiente humano da empresa.'
-      },
-      'PROCESSOS': {
-        descricao: 'Avalia a eficiência e a padronização dos processos internos.'
-      },
-      'CULTURA': {
-        descricao: 'Reflete os valores, crenças e comportamentos predominantes.'
-      },
-      'AMBIENTE': {
-        descricao: 'Analisa o clima e as condições de trabalho.'
-      },
-      'FOCO': {
-        descricao: 'Determina para onde a atenção e os recursos da empresa estão direcionados.'
-      },
-      'ESTRATÉGIA': {
-        descricao: 'Avalia a clareza e a execução dos planos de longo prazo.'
-      },
-      'EXPERIÊNCIA': {
-        descricao: 'Mede a qualidade das interações e a satisfação geral.'
-      },
-      'SAÚDE': {
-        descricao: 'Examina o bem-estar financeiro, físico e mental da organização e seus membros.'
-      },
-      'FERRAMENTAS': {
-        descricao: 'Avalia a disponibilidade e o uso de recursos e tecnologias.'
-      },
-      'DADOS': {
-        descricao: 'Foca na coleta, análise e utilização de informações para decisões.'
-      },
-      'RESULTADO': {
-        descricao: 'Mede o desempenho e a consecução de metas e objetivos.'
-      },
-      'OBJETIVO': {
-        descricao: 'Determina a clareza e a ambição dos propósitos da empresa.'
-      },
-      'PAPEL DO DONO': {
-        descricao: 'Avalia a atuação e o envolvimento do proprietário ou principal gestor.'
-      },
-      'VERBO': {
-        descricao: 'Representa a ação e a dinâmica principal da empresa.'
-      }
-    };
+    <div id="quiz" class="hidden">
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+        <div id="question-container"></div>
+    </div>
 
-    // Utilitários
-    const Utils = {
-      // Validação de e-mail
-      validarEmail(email) {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return regex.test(email);
-      },
+    <div id="resultado-container" class="hidden resultado-container">
+        <h3 id="perfil-titulo"></h3>
+        <div id="perfil-detalhes"></div>
+        <div id="grafico-container">
+            <canvas id="graficoPerfil" width="300" height="300"></canvas>
+        </div>
 
-      // Validação de nome
-      validarNome(nome) {
-        return nome && nome.trim().length >= 2;
-      },
+        <div id="perfil-detalhado" class="perfil-detalhado"></div>
 
-      // Função para debug
-      debug(mensagem, dados = null) {
-        if (debugMode) {
-          const debugInfo = document.getElementById("debug-info");
-          debugInfo.style.display = "block";
-          debugInfo.textContent += `\n[${new Date().toLocaleTimeString()}] ${mensagem}`;
-          if (dados) {
-            debugInfo.textContent += `\nDados: ${JSON.stringify(dados, null, 2)}`;
-          }
-        }
-        console.log(`[DEBUG] ${mensagem}`, dados);
-      },
+        <div id="email-status" class="email-status hidden"></div>
 
-      // Função para delay
-      delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-      }
-    };
+        <div class="container" style="margin-top: 20px;">
+            <button id="restart-button">Refazer Teste</button>
+        </div>
+        <div id="debug-info"></div>
+    </div>
 
-    // Validação de formulário
-    const Validation = {
-      showError(elementId, message) {
-        const errorElement = document.getElementById(elementId);
-        errorElement.textContent = message;
-        errorElement.classList.remove('hidden');
-      },
+    <script>
+        // Configurações e constantes
+        const CONFIG = {
+            WEBHOOK_URL: "https://primary-kh0f-zuper.up.railway.app/webhook/bussola_empresarial",
+            MAX_RETRIES: 3,
+            RETRY_DELAY: 2000,
+            EMAIL_SEND_DELAY: 1000
+        };
 
-      hideError(elementId) {
-        const errorElement = document.getElementById(elementId);
-        errorElement.classList.add('hidden');
-      },
+        // Array completo com as 16 categorias/perguntas e suas opções (sem embaralhamento)
+        const categoriasBase = [
+            {
+                categoria: "LIDERANÇA",
+                opcoes: [
+                    { texto: "Funcional", valor: 4 },
+                    { texto: "Organizacional", valor: 3 },
+                    { texto: "Líderes", valor: 2 },
+                    { texto: "Comandar", valor: 1 }
+                ]
+            },
+            {
+                categoria: "ESTRUTURA",
+                opcoes: [
+                    { texto: "Organograma", valor: 4 },
+                    { texto: "Personograma", valor: 3 },
+                    { texto: "Tribograma", valor: 2 },
+                    { texto: "Eugrama", valor: 1 }
+                ]
+            },
+            {
+                categoria: "PESSOAS",
+                opcoes: [
+                    { texto: "Times", valor: 4 },
+                    { texto: "Colaboradores", valor: 3 },
+                    { texto: "Ajudantes", valor: 2 },
+                    { texto: "Voluntários", valor: 1 }
+                ]
+            },
+            {
+                categoria: "PROCESSOS",
+                opcoes: [
+                    { texto: "Fluxos & Governança", valor: 4 },
+                    { texto: "Fluxos Básicos", valor: 3 },
+                    { texto: "Caminho", valor: 2 },
+                    { texto: "Decisões", valor: 1 }
+                ]
+            },
+            {
+                categoria: "CULTURA",
+                opcoes: [
+                    { texto: "Propósito", valor: 4 },
+                    { texto: "Valores", valor: 3 },
+                    { texto: "Comportamento", valor: 2 },
+                    { texto: "Ambiente", valor: 1 }
+                ]
+            },
+            {
+                categoria: "AMBIENTE",
+                opcoes: [
+                    { texto: "Dominante", valor: 4 },
+                    { texto: "Competitivo", valor: 3 },
+                    { texto: "Flexível", valor: 2 },
+                    { texto: "Estimulante", valor: 1 }
+                ]
+            },
+            {
+                categoria: "FOCO",
+                opcoes: [
+                    { texto: "Time", valor: 4 },
+                    { texto: "Empresa", valor: 3 },
+                    { texto: "Produto", valor: 2 },
+                    { texto: "Cliente", valor: 1 }
+                ]
+            },
+            {
+                categoria: "ESTRATÉGIA",
+                opcoes: [
+                    { texto: "Implementar", valor: 4 },
+                    { texto: "Realizar", valor: 3 },
+                    { texto: "Planejar", valor: 2 },
+                    { texto: "Executar", valor: 1 }
+                ]
+            },
+            {
+                categoria: "EXPERIÊNCIA",
+                opcoes: [
+                    { texto: "Excelência", valor: 4 },
+                    { texto: "Satisfação", valor: 3 },
+                    { texto: "Engajamento", valor: 2 },
+                    { texto: "Inovação", valor: 1 }
+                ]
+            },
+            {
+                categoria: "SAÚDE",
+                opcoes: [
+                    { texto: "Financeiro", valor: 4 },
+                    { texto: "Físico", valor: 3 },
+                    { texto: "Mental", valor: 2 },
+                    { texto: "Emocional", valor: 1 }
+                ]
+            },
+            {
+                categoria: "FERRAMENTAS",
+                opcoes: [
+                    { texto: "Especializadas", valor: 4 },
+                    { texto: "Básicas", valor: 3 },
+                    { texto: "Digitais", valor: 2 },
+                    { texto: "Manuais", valor: 1 }
+                ]
+            },
+            {
+                categoria: "DADOS",
+                opcoes: [
+                    { texto: "Positivos", valor: 4 },
+                    { texto: "Negativos", valor: 3 },
+                    { texto: "Qualitativos", valor: 2 },
+                    { texto: "Quantitativos", valor: 1 }
+                ]
+            },
+            {
+                categoria: "RESULTADO",
+                opcoes: [
+                    { texto: "Objetivos", valor: 4 },
+                    { texto: "Metas", valor: 3 },
+                    { texto: "Lucro", valor: 2 },
+                    { texto: "Impacto", valor: 1 }
+                ]
+            },
+            {
+                categoria: "OBJETIVO",
+                opcoes: [
+                    { texto: "Profissionalizar", valor: 4 },
+                    { texto: "Otimizar", valor: 3 },
+                    { texto: "Diversificar", valor: 2 },
+                    { texto: "Expandir", valor: 1 }
+                ]
+            },
+            {
+                categoria: "PAPEL DO DONO",
+                opcoes: [
+                    { texto: "Empreender Tudo", valor: 4 },
+                    { texto: "Gerenciar Tudo", valor: 3 },
+                    { texto: "Fazer Tudo", valor: 2 },
+                    { texto: "Decidir Tudo", valor: 1 }
+                ]
+            },
+            {
+                categoria: "VERBO",
+                opcoes: [
+                    { texto: "Dirigir", valor: 4 },
+                    { texto: "Coordenar", valor: 3 },
+                    { texto: "Fazer", valor: 2 },
+                    { texto: "Conduzir", valor: 1 }
+                ]
+            }
+        ];
 
-      validateForm() {
-        let isValid = true;
-        
-        // Validar nome
-        const nome = document.getElementById("name").value.trim();
-        if (!Utils.validarNome(nome)) {
-          this.showError('name-error', 'Por favor, insira seu nome completo (mínimo 2 caracteres).');
-          isValid = false;
-        } else {
-          this.hideError('name-error');
-        }
+        // Variáveis globais
+        let perguntas = []; // Agora são as categorias
+        let respostas = {}; // Armazena a opção escolhida por categoria
+        let pontuacoesCategorias = {}; // Armazena a pontuação total por categoria
+        let userName = "";
+        let userEmail = "";
+        let perguntaAtual = 0;
+        let debugMode = false;
+        let resultadoAtual = null; // Armazenará os resultados processados
+        let graficoChart = null;
+        let emailEnviado = false;
+        let tentativasEnvio = 0;
 
-        // Validar e-mail
-        const email = document.getElementById("email").value.trim();
-        if (!Utils.validarEmail(email)) {
-          this.showError('email-error', 'Por favor, insira um e-mail válido.');
-          isValid = false;
-        } else {
-          Validation.hideError('email-error');
-        }
+        // Informações detalhadas sobre cada categoria (opcional, para futura expansão)
+        const categoriasDetalhe = {
+            'LIDERANÇA': {
+                descricao: 'Avalia o estilo e a eficácia da liderança na organização, impactando diretamente o engajamento e a direção estratégica da equipe.'
+            },
+            'ESTRUTURA': {
+                descricao: 'Mede a clareza, adequação e flexibilidade da estrutura organizacional para suportar o crescimento e a inovação.'
+            },
+            'PESSOAS': {
+                descricao: 'Foca na gestão de talentos, desenvolvimento de habilidades e no ambiente humano que promove o bem-estar e a produtividade.'
+            },
+            'PROCESSOS': {
+                descricao: 'Avalia a eficiência, padronização e automação dos processos internos, visando otimização e redução de erros.'
+            },
+            'CULTURA': {
+                descricao: 'Reflete os valores, crenças e comportamentos predominantes que moldam o ambiente de trabalho e as interações diárias.'
+            },
+            'AMBIENTE': {
+                descricao: 'Analisa o clima organizacional e as condições físicas e emocionais que afetam a performance e a satisfação dos colaboradores.'
+            },
+            'FOCO': {
+                descricao: 'Determina para onde a atenção e os recursos da empresa estão direcionados, seja no cliente, produto, equipe ou mercado.'
+            },
+            'ESTRATÉGIA': {
+                descricao: 'Avalia a clareza, a execução e a adaptabilidade dos planos de longo prazo para alcançar os objetivos de negócio.'
+            },
+            'EXPERIÊNCIA': {
+                descricao: 'Mede a qualidade das interações com clientes e colaboradores, buscando excelência e engajamento contínuo.'
+            },
+            'SAÚDE': {
+                descricao: 'Examina o bem-estar financeiro, físico e mental da organização e de seus membros, essencial para a sustentabilidade.'
+            },
+            'FERRAMENTAS': {
+                descricao: 'Avalia a disponibilidade, a adequação e o uso eficaz de recursos e tecnologias para otimizar as operações.'
+            },
+            'DADOS': {
+                descricao: 'Foca na coleta, análise e utilização de informações para embasar decisões estratégicas e operacionais.'
+            },
+            'RESULTADO': {
+                descricao: 'Mede o desempenho e a consecução de metas e objetivos, abrangendo tanto lucros quanto impacto social e ambiental.'
+            },
+            'OBJETIVO': {
+                descricao: 'Determina a clareza, a ambição e o alinhamento dos propósitos da empresa com suas ações diárias.'
+            },
+            'PAPEL DO DONO': {
+                descricao: 'Avalia a atuação e o envolvimento do proprietário ou principal gestor na estratégia, operação e desenvolvimento do negócio.'
+            },
+            'VERBO': {
+                descricao: 'Representa a ação e a dinâmica principal que impulsiona a empresa, como "dirigir", "coordenar" ou "inovar".'
+            }
+        };
 
-        return isValid;
-      }
-    };
+        // Utilitários
+        const Utils = {
+            // Validação de e-mail
+            validarEmail(email) {
+                const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return regex.test(email);
+            },
 
-    // Gerenciador de estado da aplicação
-    const AppState = {
-      reset() {
-        respostas = {};
-        pontuacoesCategorias = {}; // Resetar pontuações
-        perguntaAtual = 0;
-        resultadoAtual = null;
-        emailEnviado = false;
-        tentativasEnvio = 0;
-        
-        if (graficoChart) {
-          graficoChart.destroy();
-          graficoChart = null;
-        }
-      },
+            // Validação de nome
+            validarNome(nome) {
+                return nome && nome.trim().length >= 2;
+            },
 
-      initializeCategories() {
-        // As categorias já estão na ordem desejada em categoriasBase
-        perguntas = categoriasBase; // 'perguntas' agora representa as categorias
-        // Inicializa as pontuações para cada categoria
-        categoriasBase.forEach(cat => {
-            pontuacoesCategorias[cat.categoria] = 0;
-        });
-      }
-    };
+            // Função para debug
+            debug(mensagem, dados = null) {
+                if (debugMode) {
+                    const debugInfo = document.getElementById("debug-info");
+                    debugInfo.style.display = "block";
+                    let debugText = `\n[${new Date().toLocaleTimeString()}] ${mensagem}`;
+                    if (dados) {
+                        debugText += `\nDados: ${JSON.stringify(dados, null, 2)}`;
+                    }
+                    debugInfo.textContent += debugText;
+                }
+                console.log(`[DEBUG] ${mensagem}`, dados);
+            },
 
-    // Gerenciador de UI
-    const UI = {
-      showSection(sectionId) {
-        document.querySelectorAll('.hidden').forEach(el => {
-          if (el.id !== sectionId) el.classList.add('hidden');
-        });
-        document.getElementById(sectionId).classList.remove('hidden');
-      },
+            // Função para delay
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        };
 
-      updateProgressBar() {
-        const progresso = (perguntaAtual / perguntas.length) * 100;
-        document.getElementById("progress").style.width = `${progresso}%`;
-      },
+        // Validação de formulário
+        const Validation = {
+            showError(elementId, message) {
+                const errorElement = document.getElementById(elementId);
+                errorElement.textContent = message;
+                errorElement.classList.remove('hidden');
+            },
 
-      showLoadingMessage(message) {
-        document.getElementById("question-container").innerHTML = `<div class="loading">${message}</div>`;
-      },
+            hideError(elementId) {
+                const errorElement = document.getElementById(elementId);
+                errorElement.classList.add('hidden');
+            },
 
-      showStatusMessage(elementId, message, type = null) {
-        const element = document.getElementById(elementId);
-        element.classList.remove("hidden", "success", "error", "warning");
-        
-        if (type) {
-          element.classList.add(type);
-        }
-        
-        element.textContent = message;
-      }
-    };
+            validateForm() {
+                let isValid = true;
 
-    // Gerenciador de resultados
-    const ResultsManager = {
-        calculateAndDisplayResults() {
-            document.getElementById("quiz").classList.add("hidden");
-            document.getElementById("resultado-container").classList.remove("hidden");
+                // Validar nome
+                const nome = document.getElementById("name").value.trim();
+                if (!Utils.validarNome(nome)) {
+                    this.showError('name-error', 'Por favor, insira seu nome completo (mínimo 2 caracteres).');
+                    isValid = false;
+                } else {
+                    this.hideError('name-error');
+                }
 
-            const maxScorePerCategory = 4;
-            const percentuaisCalculados = {};
-            for (const categoria in pontuacoesCategorias) {
-                const score = pontuacoesCategorias[categoria];
-                percentuaisCalculados[categoria] = (score / maxScorePerCategory) * 100;
-            }
+                // Validar e-mail
+                const email = document.getElementById("email").value.trim();
+                if (!Utils.validarEmail(email)) {
+                    this.showError('email-error', 'Por favor, insira um e-mail válido.');
+                    isValid = false;
+                } else {
+                    Validation.hideError('email-error');
+                }
 
-            Utils.debug("Pontuações por Categoria:", pontuacoesCategorias);
-            Utils.debug("Percentuais Calculados (apenas para webhook/n8n):", percentuaisCalculados);
+                return isValid;
+            }
+        };
 
-            resultadoAtual = {
-                userName: userName,
-                userEmail: userEmail,
-                pontuacoesCategorias: pontuacoesCategorias, // As pontuações de 1-4
-                percentuaisCategorias: percentuaisCalculados // Os percentuais de 0-100% para o n8n
-            };
+        // Gerenciador de estado da aplicação
+        const AppState = {
+            reset() {
+                respostas = {};
+                pontuacoesCategorias = {}; // Resetar pontuações
+                perguntaAtual = 0;
+                resultadoAtual = null;
+                emailEnviado = false;
+                tentativasEnvio = 0;
 
-            this.renderResults(resultadoAtual);
-            this.createChart(resultadoAtual.pontuacoesCategorias); 
+                if (graficoChart) {
+                    graficoChart.destroy();
+                    graficoChart = null;
+                }
+            },
 
-            // Configurar botão de reiniciar
-            document.getElementById("restart-button").addEventListener("click", () => {
-                location.reload();
-            });
+            initializeCategories() {
+                // As categorias já estão na ordem desejada em categoriasBase
+                perguntas = categoriasBase; // 'perguntas' agora representa as categorias
+                // Inicializa as pontuações para cada categoria
+                categoriasBase.forEach(cat => {
+                    pontuacoesCategorias[cat.categoria] = 0;
+                });
+            }
+        };
 
-            // Pequeno atraso para garantir que o gráfico esteja completamente renderizado antes de capturar a imagem
-            setTimeout(() => {
-                EmailManager.sendResultEmail();
-            }, CONFIG.EMAIL_SEND_DELAY + 200); // 200ms extra para renderização do gráfico
-        },
+        // Gerenciador de UI
+        const UI = {
+            showSection(sectionId) {
+                document.querySelectorAll('.hidden').forEach(el => {
+                    if (el.id !== sectionId) el.classList.add('hidden');
+                });
+                document.getElementById(sectionId).classList.remove('hidden');
+            },
 
-        showError(message) {
-            document.getElementById("perfil-titulo").textContent = "Erro ao processar resultados";
-            document.getElementById("perfil-detalhes").innerHTML = `<p>${message}</p>`;
-        },
+            updateProgressBar() {
+                const progresso = (perguntaAtual / perguntas.length) * 100;
+                document.getElementById("progress").style.width = `${progresso}%`;
+            },
 
-        renderResults(data) {
-            document.getElementById("perfil-titulo").innerHTML = `${data.userName}, aqui está a Bússola da Alta Performance da sua empresa!`;
+            showLoadingMessage(message) {
+                document.getElementById("question-container").innerHTML = `<div class="loading">${message}</div>`;
+            },
 
-            let detalhesHTML = "<p>Esta bússola reflete suas escolhas em diversas dimensões empresariais:</p>";
-            detalhesHTML += "<ul>";
-            for (const categoria in data.pontuacoesCategorias) {
-                detalhesHTML += `<li class="perfil-item"><strong>${categoria}</strong>: ${data.pontuacoesCategorias[categoria]}</li>`;
-            }
-            detalhesHTML += "</ul>";
-            detalhesHTML += "<p>Obrigado por participar da avaliação!</p>";
-            document.getElementById("perfil-detalhes").innerHTML = detalhesHTML;
-            document.getElementById("perfil-detalhado").innerHTML = ""; // Limpar seção detalhada, pois não há perfis específicos
-        },
+            showStatusMessage(elementId, message, type = null) {
+                const element = document.getElementById(elementId);
+                element.classList.remove("hidden", "success", "error", "warning");
 
-        createChart(pontuacoes) { // Agora recebe as pontuações diretas (1-4)
-            if (typeof Chart === 'undefined') {
-                Utils.debug("Chart.js não disponível");
-                return;
-            }
+                if (type) {
+                    element.classList.add(type);
+                }
 
-            Utils.debug("Criando gráfico com pontuações diretas", pontuacoes);
+                element.textContent = message;
+            }
+        };
 
-            const labels = categoriasBase.map(cat => cat.categoria);
-            const values = labels.map(label => pontuacoes[label] || 0); // Usa as pontuações diretas
+        // Gerenciador de resultados
+        const ResultsManager = {
+            calculateAndDisplayResults() {
+                document.getElementById("quiz").classList.add("hidden");
+                document.getElementById("resultado-container").classList.remove("hidden");
 
-            const ctx = document.getElementById("graficoPerfil").getContext("2d");
+                const maxScorePerCategory = 4;
+                const percentuaisCalculados = {};
+                for (const categoria in pontuacoesCategorias) {
+                    const score = pontuacoesCategorias[categoria];
+                    percentuaisCalculados[categoria] = (score / maxScorePerCategory) * 100;
+                }
 
-            // Cores genéricas para as 16 categorias (pode ser ajustado se houver preferência de cores)
-            const backgroundColors = [
-                'rgba(0, 123, 255, 0.3)', // Cor principal azul
-                'rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)', 'rgba(199, 199, 199, 0.2)', 'rgba(83, 102, 255, 0.2)',
-                'rgba(99, 255, 132, 0.2)', 'rgba(162, 54, 235, 0.2)', 'rgba(206, 255, 86, 0.2)', 'rgba(192, 75, 192, 0.2)',
-                'rgba(102, 153, 255, 0.2)', 'rgba(159, 255, 64, 0.2)', 'rgba(199, 83, 102, 0.2)', 'rgba(255, 99, 132, 0.2)'
-            ];
-            const borderColors = [
-                'rgb(0, 123, 255)', // Cor principal azul
-                'rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 206, 86)', 'rgb(75, 192, 192)',
-                'rgb(153, 102, 255)', 'rgb(255, 159, 64)', 'rgb(199, 199, 199)', 'rgb(83, 102, 255)',
-                'rgb(99, 255, 132)', 'rgb(162, 54, 235)', 'rgb(206, 255, 86)', 'rgb(192, 75, 192)',
-                'rgb(102, 153, 255)', 'rgb(159, 255, 64)', 'rgb(199, 83, 102)', 'rgb(255, 99, 132)'
-            ];
+                Utils.debug("Pontuações por Categoria:", pontuacoesCategorias);
+                Utils.debug("Percentuais Calculados (apenas para webhook/n8n):", percentuaisCalculados);
+
+                resultadoAtual = {
+                    userName: userName,
+                    userEmail: userEmail,
+                    pontuacoesCategorias: pontuacoesCategorias, // As pontuações de 1-4
+                    percentuaisCategorias: percentuaisCalculados // Os percentuais de 0-100% para o n8n
+                };
+
+                this.renderResults(resultadoAtual);
+                this.createChart(resultadoAtual.pontuacoesCategorias);
+
+                // Configurar botão de reiniciar
+                document.getElementById("restart-button").addEventListener("click", () => {
+                    location.reload();
+                });
+
+                // Pequeno atraso para garantir que o gráfico esteja completamente renderizado antes de capturar a imagem
+                setTimeout(() => {
+                    EmailManager.sendResultEmail();
+                }, CONFIG.EMAIL_SEND_DELAY + 200); // 200ms extra para renderização do gráfico
+            },
+
+            showError(message) {
+                document.getElementById("perfil-titulo").textContent = "Erro ao processar resultados";
+                document.getElementById("perfil-detalhes").innerHTML = `<p>${message}</p>`;
+            },
+
+            renderResults(data) {
+                document.getElementById("perfil-titulo").innerHTML = `${data.userName}, aqui está a Bússola da Alta Performance da sua empresa!`;
+
+                let detalhesHTML = "<p>Esta bússola reflete suas escolhas em diversas dimensões empresariais:</p>";
+                detalhesHTML += "<ul>";
+                for (const categoria in data.pontuacoesCategorias) {
+                    detalhesHTML += `<li class="perfil-item"><strong>${categoria}</strong>: ${data.pontuacoesCategorias[categoria]}</li>`;
+                }
+                detalhesHTML += "</ul>";
+                detalhesHTML += "<p>Obrigado por participar da avaliação!</p>";
+                document.getElementById("perfil-detalhes").innerHTML = detalhesHTML;
+
+                // Renderizar descrições detalhadas
+                let perfilDetalhadoHTML = "<h3>O que cada dimensão significa?</h3>";
+                for (const categoria in data.pontuacoesCategorias) {
+                    const pontuacao = data.pontuacoesCategorias[categoria];
+                    const descricaoInfo = categoriasDetalhe[categoria];
+                    if (descricaoInfo) {
+                        perfilDetalhadoHTML += `
+                            <div class="perfil-secao">
+                                <h4>${categoria} (Pontuação: ${pontuacao})</h4>
+                                <p>${descricaoInfo.descricao}</p>
+                            </div>
+                        `;
+                    }
+                }
+                document.getElementById("perfil-detalhado").innerHTML = perfilDetalhadoHTML;
+            },
+
+            createChart(pontuacoes) { // Agora recebe as pontuações diretas (1-4)
+                if (typeof Chart === 'undefined') {
+                    Utils.debug("Chart.js não disponível");
+                    return;
+                }
+
+                Utils.debug("Criando gráfico com pontuações diretas", pontuacoes);
+
+                const labels = categoriasBase.map(cat => cat.categoria);
+                const values = labels.map(label => pontuacoes[label] || 0); // Usa as pontuações diretas
+
+                const ctx = document.getElementById("graficoPerfil").getContext("2d");
+
+                // Cores genéricas para as 16 categorias (pode ser ajustado se houver preferência de cores)
+                const backgroundColors = [
+                    'rgba(0, 123, 255, 0.3)', // Cor principal azul
+                    'rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)', 'rgba(199, 199, 199, 0.2)', 'rgba(83, 102, 255, 0.2)',
+                    'rgba(99, 255, 132, 0.2)', 'rgba(162, 54, 235, 0.2)', 'rgba(206, 255, 86, 0.2)', 'rgba(192, 75, 192, 0.2)',
+                    'rgba(102, 153, 255, 0.2)', 'rgba(159, 255, 64, 0.2)', 'rgba(199, 83, 102, 0.2)', 'rgba(255, 99, 132, 0.2)'
+                ];
+                const borderColors = [
+                    'rgb(0, 123, 255)', // Cor principal azul
+                    'rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 206, 86)', 'rgb(75, 192, 192)',
+                    'rgb(153, 102, 255)', 'rgb(255, 159, 64)', 'rgb(199, 199, 199)', 'rgb(83, 102, 255)',
+                    'rgb(99, 255, 132)', 'rgb(162, 54, 235)', 'rgb(206, 255, 86)', 'rgb(192, 75, 192)',
+                    'rgb(102, 153, 255)', 'rgb(159, 255, 64)', 'rgb(199, 83, 102)', 'rgb(255, 99, 132)'
+                ];
 
 
-            if (graficoChart) {
-                graficoChart.destroy(); // Destruir o gráfico anterior se existir
-            }
+                if (graficoChart) {
+                    graficoChart.destroy(); // Destruir o gráfico anterior se existir
+                }
 
-            graficoChart = new Chart(ctx, {
-                type: "radar",
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Sua Pontuação', // Rótulo sem '%'
-                        data: values,
-                        backgroundColor: 'rgba(0, 123, 255, 0.3)', /* Cor de preenchimento azul */
-                        borderColor: 'rgb(0, 123, 255)', /* Cor da linha azul */
-                        pointBackgroundColor: backgroundColors, /* Cores para os pontos */
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: borderColors,
-                        borderWidth: 2,
-                        pointRadius: 6,
-                        pointHoverRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    scales: {
-                        r: {
-                            angleLines: {
-                                color: 'rgba(255, 255, 255, 0.3)',
-                                lineWidth: 1
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.3)',
-                                lineWidth: 1
-                            },
-                            pointLabels: {
-                                color: '#fff',
-                                font: {
-                                    size: 10, // Ajustado para caber 16 labels
-                                    weight: 'bold'
-                                }
-                            },
-                            ticks: {
-                                color: '#fff',
-                                backdropColor: 'rgba(0, 0, 0, 0.7)',
-                                beginAtZero: true,
-                                min: 0, 
-                                max: 4, 
-                                stepSize: 1, 
-                                showLabelBackdrop: true,
-                                font: {
-                                    size: 10
-                                },
-                                // CORREÇÃO ANTERIOR: Garante que os rótulos 0, 1, 2, 3, 4 sejam exibidos
-                                callback: function(value, index, values) {
-                                    if (Number.isInteger(value) && value >= 0 && value <= 4) {
-                                        return value;
-                                    }
-                                    return null; 
-                                }
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            position: "bottom",
-                            labels: {
-                                color: '#fff',
-                                font: {
-                                    size: 12
-                                }
-                            }
-                        },
-                        title: {
-                            display: true,
-                            text: "Distribuição da Bússola da Alta Performance",
-                            color: "#ffffff",
-                            font: {
-                                size: 16,
-                                weight: 'bold'
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (context) {
-                                    // Mostra o rótulo e o valor da pontuação (0-4)
-                                    return `${context.label}: ${context.parsed.r}`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
+                graficoChart = new Chart(ctx, {
+                    type: "radar",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Sua Pontuação', // Rótulo sem '%'
+                            data: values,
+                            backgroundColor: 'rgba(0, 123, 255, 0.3)', /* Cor de preenchimento azul */
+                            borderColor: 'rgb(0, 123, 255)', /* Cor da linha azul */
+                            pointBackgroundColor: backgroundColors, /* Cores para os pontos */
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: borderColors,
+                            borderWidth: 2,
+                            pointRadius: 6,
+                            pointHoverRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            r: {
+                                angleLines: {
+                                    color: 'rgba(255, 255, 255, 0.3)',
+                                    lineWidth: 1
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.3)',
+                                    lineWidth: 1
+                                },
+                                pointLabels: {
+                                    color: '#fff',
+                                    font: {
+                                        size: 10, // Ajustado para caber 16 labels
+                                        weight: 'bold'
+                                    }
+                                },
+                                ticks: {
+                                    color: '#fff',
+                                    backdropColor: 'rgba(0, 0, 0, 0.7)',
+                                    beginAtZero: true,
+                                    min: 0,
+                                    max: 4,
+                                    stepSize: 1,
+                                    showLabelBackdrop: true,
+                                    font: {
+                                        size: 10
+                                    },
+                                    callback: function(value, index, values) {
+                                        if (Number.isInteger(value) && value >= 0 && value <= 4) {
+                                            return value;
+                                        }
+                                        return null;
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: "bottom",
+                                labels: {
+                                    color: '#fff',
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: "Distribuição da Bússola da Alta Performance",
+                                color: "#ffffff",
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        // Mostra o rótulo e o valor da pontuação (0-4)
+                                        return `${context.label}: ${context.parsed.r}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
 
-            Utils.debug("Gráfico de teia criado com sucesso.");
-        }
-    };
+                Utils.debug("Gráfico de teia criado com sucesso.");
+            }
+        };
 
-    // Gerenciador de e-mail
-    const EmailManager = {
-        async sendResultEmail() {
-            if (emailEnviado || !this.isValidResult()) {
-                Utils.debug("E-mail não enviado - já enviado ou resultado inválido");
-                return;
-            }
-            emailEnviado = true;
-            UI.showStatusMessage("email-status", "Enviando resultado para seu e-mail...", null);
+        // Gerenciador de e-mail
+        const EmailManager = {
+            async sendResultEmail() {
+                if (emailEnviado || !this.isValidResult()) {
+                    Utils.debug("E-mail não enviado - já enviado ou resultado inválido");
+                    return;
+                }
+                emailEnviado = true;
+                UI.showStatusMessage("email-status", "Enviando resultado para seu e-mail...", null);
 
-            // Pequeno atraso para garantir que o gráfico esteja completamente renderizado antes de capturar a imagem
-            await Utils.delay(500); // 500ms é um bom ponto de partida, ajuste se necessário
+                // Pequeno atraso para garantir que o gráfico esteja completamente renderizado antes de capturar a imagem
+                await Utils.delay(500); // 500ms é um bom ponto de partida, ajuste se necessário
 
-            try {
-                const emailData = this.prepareEmailData();
-                
-                const response = await fetch(CONFIG.WEBHOOK_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(emailData)
-                });
+                try {
+                    const emailData = this.prepareEmailData();
 
-                if (response.ok) {
-                    UI.showStatusMessage("email-status", 
-                      `Resultado enviado com sucesso para ${resultadoAtual.userEmail}!`, "success");
-                } else {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                
-            } catch (error) {
-                Utils.debug("Erro ao enviar e-mail", error);
-                UI.showStatusMessage("email-status", 
-                  "Erro ao enviar e-mail. Por favor, tente novamente mais tarde.", "error");
-                emailEnviado = false;
-            }
-        },
+                    const response = await fetch(CONFIG.WEBHOOK_URL, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(emailData)
+                    });
 
-        isValidResult() {
-            // Verifica se há pontuações calculadas e se o e-mail está presente
-            return resultadoAtual &&
-                    Object.keys(resultadoAtual.pontuacoesCategorias).length > 0 && // Mudado para pontuacoesCategorias
-                    resultadoAtual.userEmail;
-        },
+                    if (response.ok) {
+                        UI.showStatusMessage("email-status",
+                            `Resultado enviado com sucesso para ${resultadoAtual.userEmail}!`, "success");
+                    } else {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
 
-        prepareEmailData() {
-            let graficoImgBase64 = null;
-            
-            try {
-                if (graficoChart) {
-                    const canvas = document.getElementById("graficoPerfil");
-                    graficoImgBase64 = canvas.toDataURL("image/png");
-                }
-            } catch (error) {
-                Utils.debug("Erro ao capturar gráfico para e-mail", error);
-            }
+                } catch (error) {
+                    Utils.debug("Erro ao enviar e-mail", error);
+                    UI.showStatusMessage("email-status",
+                        "Erro ao enviar e-mail. Por favor, tente novamente mais tarde.", "error");
+                    emailEnviado = false;
+                }
+            },
 
-            return {
-                userName: resultadoAtual.userName,
-                userEmail: resultadoAtual.userEmail,
-                // Mantemos percentuaisCategorias aqui, pois o n8n JSON Code pode ainda esperar isso para a análise detalhada.
-                pontuacoesCategorias: resultadoAtual.pontuacoesCategorias, 
-                percentuaisCategorias: resultadoAtual.percentuaisCategorias,
-                graficoBase64: graficoImgBase64,
-                acao: "enviar_email_bussola" // Ação específica para o webhook
-            };
-        }
-    };
+            isValidResult() {
+                // Verifica se há pontuações calculadas e se o e-mail está presente
+                return resultadoAtual &&
+                       Object.keys(resultadoAtual.pontuacoesCategorias).length > 0 &&
+                       resultadoAtual.userEmail;
+            },
 
-    // Gerenciador de quiz
-    const QuizManager = {
-      start() {
-        if (!Validation.validateForm()) {
-          return;
-        }
+            prepareEmailData() {
+                let graficoImgBase64 = null;
 
-        userName = document.getElementById("name").value.trim();
-        userEmail = document.getElementById("email").value.trim();
+                try {
+                    if (graficoChart) {
+                        const canvas = document.getElementById("graficoPerfil");
+                        graficoImgBase64 = canvas.toDataURL("image/png");
+                    }
+                } catch (error) {
+                    Utils.debug("Erro ao capturar gráfico para e-mail", error);
+                }
 
-        AppState.reset();
-        AppState.initializeCategories(); // Inicializa as categorias e pontuações
+                return {
+                    userName: resultadoAtual.userName,
+                    userEmail: resultadoAtual.userEmail,
+                    pontuacoesCategorias: resultadoAtual.pontuacoesCategorias,
+                    percentuaisCategorias: resultadoAtual.percentuaisCategorias,
+                    graficoBase64: graficoImgBase64,
+                    acao: "enviar_email_bussola" // Ação específica para o webhook
+                };
+            }
+        };
 
-        document.getElementById("intro-container").classList.add("hidden");
-        document.getElementById("quiz").classList.remove("hidden");
+        // Gerenciador de quiz
+        const QuizManager = {
+            start() {
+                if (!Validation.validateForm()) {
+                    return;
+                }
 
-        UI.updateProgressBar();
-        this.showQuestion(perguntaAtual);
-      },
+                userName = document.getElementById("name").value.trim();
+                userEmail = document.getElementById("email").value.trim();
 
-      showQuestion(index) {
-        if (index >= perguntas.length) {
-          ResultsManager.calculateAndDisplayResults(); // Agora calcula e exibe localmente
-          return;
-        }
+                AppState.reset();
+                AppState.initializeCategories(); // Inicializa as categorias e pontuações
 
-        const categoria = perguntas[index];
-        // O texto da "pergunta" é o nome da categoria
-        let html = `<p><strong>${index + 1}/${perguntas.length}. Selecione a opção que melhor descreve a dimensão "${categoria.categoria}":</strong></p>`;
-        
-        categoria.opcoes.forEach((opcao, idx) => {
-          // NOVO: Adiciona um ID único para o input de rádio e o associa ao label
-          const radioId = `q${index}-opt${idx}`; 
-          html += `<label for="${radioId}"><input type="radio" id="${radioId}" name="resposta" value="${opcao.valor}" data-categoria="${categoria.categoria}" /> ${String.fromCharCode(97 + idx)}) ${opcao.texto}</label>`;
-        });
-        
-        html += `<div class="container" style="margin-top: 15px;"><button id="next-button">Próxima</button></div>`;
-        
-        document.getElementById("question-container").innerHTML = html;
-        
-        document.getElementById("next-button").addEventListener("click", () => {
-          this.registerAnswer(index);
-        });
-      },
+                document.getElementById("intro-container").classList.add("hidden");
+                document.getElementById("quiz").classList.remove("hidden");
 
-      registerAnswer(index) {
-        const selected = document.querySelector("input[name='resposta']:checked");
-        if (!selected) {
-          alert("Por favor, selecione uma resposta.");
-          return;
-        }
-        // NOVO: Adiciona debug para o valor capturado do input de rádio
-        Utils.debug("Valor do rádio selecionado (raw):", selected.value);
+                UI.updateProgressBar();
+                this.showQuestion(perguntaAtual);
+            },
 
-        const categoriaSelecionada = perguntas[index].categoria;
-        const valorSelecionado = parseInt(selected.value);
+            showQuestion(index) {
+                if (index >= perguntas.length) {
+                    ResultsManager.calculateAndDisplayResults(); // Agora calcula e exibe localmente
+                    return;
+                }
 
-        pontuacoesCategorias[categoriaSelecionada] = valorSelecionado;
-        Utils.debug(`Resposta para ${categoriaSelecionada}: ${valorSelecionado} pontos`);
+                const categoria = perguntas[index];
+                // O texto da "pergunta" é o nome da categoria
+                let html = `<p><strong>${index + 1}/${perguntas.length}. Selecione a opção que melhor descreve a dimensão "${categoria.categoria}":</strong></p>`;
 
-        perguntaAtual++;
-        UI.updateProgressBar();
-        this.showQuestion(perguntaAtual);
-      }
-    };
+                categoria.opcoes.forEach((opcao, idx) => {
+                    // Adiciona um ID único para o input de rádio e o associa ao label
+                    const radioId = `q${index}-opt${idx}`;
+                    html += `<label for="${radioId}"><input type="radio" id="${radioId}" name="resposta" value="${opcao.valor}" data-categoria="${categoria.categoria}" /> ${String.fromCharCode(97 + idx)}) ${opcao.texto}</label>`;
+                });
 
-    // Inicialização da aplicação
-    document.addEventListener("DOMContentLoaded", function() {
-      // Configurar eventos
-      document.getElementById("start-button").addEventListener("click", () => {
-        QuizManager.start();
-      });
-      
-      // Verificar modo debug
-      if (window.location.search.includes('debug=true')) {
-        debugMode = true;
-        document.getElementById("debug-info").style.display = "block";
-        Utils.debug("Modo de debug ativado");
-      }
+                html += `<div class="container" style="margin-top: 25px;"><button id="next-button">Próxima</button></div>`;
 
-      // Validação em tempo real
-      document.getElementById("name").addEventListener("blur", () => {
-        const nome = document.getElementById("name").value.trim();
-        if (nome && !Utils.validarNome(nome)) {
-          Validation.showError('name-error', 'Nome deve ter pelo menos 2 caracteres.');
-        } else {
-          Validation.hideError('name-error');
-        }
-      });
+                document.getElementById("question-container").innerHTML = html;
 
-      document.getElementById("email").addEventListener("blur", () => {
-        const email = document.getElementById("email").value.trim();
-        if (email && !Utils.validarEmail(email)) {
-          Validation.showError('email-error', 'Por favor, insira um e-mail válido.');
-        } else {
-          Validation.hideError('email-error');
-        }
-      });
-    });
-  </script>
-  
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                document.getElementById("next-button").addEventListener("click", () => {
+                    this.registerAnswer(index);
+                });
+            },
+
+            registerAnswer(index) {
+                const selected = document.querySelector("input[name='resposta']:checked");
+                if (!selected) {
+                    alert("Por favor, selecione uma resposta.");
+                    return;
+                }
+                Utils.debug("Valor do rádio selecionado (raw):", selected.value);
+
+                const categoriaSelecionada = perguntas[index].categoria;
+                const valorSelecionado = parseInt(selected.value);
+
+                pontuacoesCategorias[categoriaSelecionada] = valorSelecionado;
+                Utils.debug(`Resposta para ${categoriaSelecionada}: ${valorSelecionado} pontos`);
+
+                perguntaAtual++;
+                UI.updateProgressBar();
+                this.showQuestion(perguntaAtual);
+            }
+        };
+
+        // Inicialização da aplicação
+        document.addEventListener("DOMContentLoaded", function() {
+            // Configurar eventos
+            document.getElementById("start-button").addEventListener("click", () => {
+                QuizManager.start();
+            });
+
+            // Verificar modo debug
+            if (window.location.search.includes('debug=true')) {
+                debugMode = true;
+                document.getElementById("debug-info").style.display = "block";
+                Utils.debug("Modo de debug ativado");
+            }
+
+            // Validação em tempo real
+            document.getElementById("name").addEventListener("blur", () => {
+                const nome = document.getElementById("name").value.trim();
+                if (nome && !Utils.validarNome(nome)) {
+                    Validation.showError('name-error', 'Nome deve ter pelo menos 2 caracteres.');
+                } else {
+                    Validation.hideError('name-error');
+                }
+            });
+            document.getElementById("name").addEventListener("input", () => {
+                const nome = document.getElementById("name").value.trim();
+                if (Utils.validarNome(nome)) {
+                    Validation.hideError('name-error');
+                }
+            });
+
+
+            document.getElementById("email").addEventListener("blur", () => {
+                const email = document.getElementById("email").value.trim();
+                if (email && !Utils.validarEmail(email)) {
+                    Validation.showError('email-error', 'Por favor, insira um e-mail válido.');
+                } else {
+                    Validation.hideError('email-error');
+                }
+            });
+            document.getElementById("email").addEventListener("input", () => {
+                const email = document.getElementById("email").value.trim();
+                if (Utils.validarEmail(email)) {
+                    Validation.hideError('email-error');
+                }
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
