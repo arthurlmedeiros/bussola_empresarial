@@ -547,29 +547,29 @@
             document.getElementById("quiz").classList.add("hidden");
             document.getElementById("resultado-container").classList.remove("hidden");
 
-            // Calcular a porcentagem para cada categoria (a pontuação máxima por categoria é 4)
-            // Para normalizar para 100%, dividimos pela pontuação máxima possível (4) e multiplicamos por 100
+            // Não precisamos mais de percentuais calculados aqui se o gráfico for de 1-4
+            // O webhook ainda pode precisar dos percentuais, então vamos mantê-los para o `resultadoAtual`
+            const maxScorePerCategory = 4;
             const percentuaisCalculados = {};
-            const maxScorePerCategory = 4; // A pontuação máxima para uma categoria
-
             for (const categoria in pontuacoesCategorias) {
                 const score = pontuacoesCategorias[categoria];
                 percentuaisCalculados[categoria] = (score / maxScorePerCategory) * 100;
             }
 
             Utils.debug("Pontuações por Categoria:", pontuacoesCategorias);
-            Utils.debug("Percentuais Calculados:", percentuaisCalculados);
+            Utils.debug("Percentuais Calculados (apenas para webhook/n8n):", percentuaisCalculados);
 
             // Preparar dados para exibição e webhook
             resultadoAtual = {
                 userName: userName,
                 userEmail: userEmail,
-                pontuacoesCategorias: pontuacoesCategorias,
-                percentuaisCategorias: percentuaisCalculados
+                pontuacoesCategorias: pontuacoesCategorias, // As pontuações de 1-4
+                percentuaisCategorias: percentuaisCalculados // Os percentuais de 0-100% para o n8n
             };
 
             this.renderResults(resultadoAtual);
-            this.createChart(resultadoAtual.percentuaisCategorias);
+            // Passa as pontuações diretas para o gráfico
+            this.createChart(resultadoAtual.pontuacoesCategorias); 
 
             // Configurar botão de reiniciar
             document.getElementById("restart-button").addEventListener("click", () => {
@@ -592,8 +592,9 @@
 
             let detalhesHTML = "<p>Esta bússola reflete suas escolhas em diversas dimensões empresariais:</p>";
             detalhesHTML += "<ul>";
-            for (const categoria in data.percentuaisCategorias) {
-                detalhesHTML += `<li class="perfil-item"><strong>${categoria}</strong>: ${data.percentuaisCategorias[categoria].toFixed(0)}%</li>`;
+            // Exibir as pontuações diretas (1-4) aqui
+            for (const categoria in data.pontuacoesCategorias) {
+                detalhesHTML += `<li class="perfil-item"><strong>${categoria}</strong>: ${data.pontuacoesCategorias[categoria]}</li>`;
             }
             detalhesHTML += "</ul>";
             detalhesHTML += "<p>Obrigado por participar da avaliação!</p>";
@@ -601,27 +602,29 @@
             document.getElementById("perfil-detalhado").innerHTML = ""; // Limpar seção detalhada, pois não há perfis específicos
         },
 
-        createChart(percentuais) {
+        createChart(pontuacoes) { // Agora recebe as pontuações diretas (1-4)
             if (typeof Chart === 'undefined') {
                 Utils.debug("Chart.js não disponível");
                 return;
             }
 
-            Utils.debug("Criando gráfico com percentuais", percentuais);
+            Utils.debug("Criando gráfico com pontuações diretas", pontuacoes);
 
             const labels = categoriasBase.map(cat => cat.categoria);
-            const values = labels.map(label => percentuais[label] || 0);
+            const values = labels.map(label => pontuacoes[label] || 0); // Usa as pontuações diretas
 
             const ctx = document.getElementById("graficoPerfil").getContext("2d");
 
             // Cores genéricas para as 16 categorias (pode ser ajustado se houver preferência de cores)
             const backgroundColors = [
+                'rgba(0, 123, 255, 0.3)', // Cor principal azul
                 'rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)',
                 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)', 'rgba(199, 199, 199, 0.2)', 'rgba(83, 102, 255, 0.2)',
                 'rgba(99, 255, 132, 0.2)', 'rgba(162, 54, 235, 0.2)', 'rgba(206, 255, 86, 0.2)', 'rgba(192, 75, 192, 0.2)',
                 'rgba(102, 153, 255, 0.2)', 'rgba(159, 255, 64, 0.2)', 'rgba(199, 83, 102, 0.2)', 'rgba(255, 99, 132, 0.2)'
             ];
             const borderColors = [
+                'rgb(0, 123, 255)', // Cor principal azul
                 'rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 206, 86)', 'rgb(75, 192, 192)',
                 'rgb(153, 102, 255)', 'rgb(255, 159, 64)', 'rgb(199, 199, 199)', 'rgb(83, 102, 255)',
                 'rgb(99, 255, 132)', 'rgb(162, 54, 235)', 'rgb(206, 255, 86)', 'rgb(192, 75, 192)',
@@ -638,7 +641,7 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Sua Pontuação (%)',
+                        label: 'Sua Pontuação', // Rótulo sem '%'
                         data: values,
                         backgroundColor: 'rgba(0, 123, 255, 0.3)', /* Cor de preenchimento azul */
                         borderColor: 'rgb(0, 123, 255)', /* Cor da linha azul */
@@ -675,9 +678,9 @@
                                 color: '#fff',
                                 backdropColor: 'rgba(0, 0, 0, 0.7)',
                                 beginAtZero: true,
-                                min: 0,
-                                max: 100, // Pontuação máxima em porcentagem
-                                stepSize: 10,
+                                min: 0, // Inicia em 0 para mostrar o centro, mas o primeiro valor significativo é 1
+                                max: 4, // **Ajustado para o máximo de 4 pontos**
+                                stepSize: 1, // **Passo de 1 em 1 para a escala 1-4**
                                 showLabelBackdrop: true,
                                 font: {
                                     size: 10
@@ -707,7 +710,8 @@
                         tooltip: {
                             callbacks: {
                                 label: function (context) {
-                                    return `${context.label}: ${context.parsed.r.toFixed(0)}%`;
+                                    // Mostra o rótulo e o valor da pontuação (1-4)
+                                    return `${context.label}: ${context.parsed.r}`;
                                 }
                             }
                         }
@@ -754,10 +758,10 @@
         },
 
         isValidResult() {
-            // Verifica se há percentuais calculados e se o e-mail está presente
+            // Verifica se há pontuações calculadas e se o e-mail está presente
             return resultadoAtual &&
-                   Object.keys(resultadoAtual.percentuaisCategorias).length > 0 &&
-                   resultadoAtual.userEmail;
+                    Object.keys(resultadoAtual.pontuacoesCategorias).length > 0 && // Mudado para pontuacoesCategorias
+                    resultadoAtual.userEmail;
         },
 
         prepareEmailData() {
@@ -775,7 +779,8 @@
             return {
                 userName: resultadoAtual.userName,
                 userEmail: resultadoAtual.userEmail,
-                pontuacoesCategorias: resultadoAtual.pontuacoesCategorias,
+                // Mantemos percentuaisCategorias aqui, pois o n8n JSON Code pode ainda esperar isso para a análise detalhada.
+                pontuacoesCategorias: resultadoAtual.pontuacoesCategorias, 
                 percentuaisCategorias: resultadoAtual.percentuaisCategorias,
                 graficoBase64: graficoImgBase64,
                 acao: "enviar_email_bussola" // Ação específica para o webhook
