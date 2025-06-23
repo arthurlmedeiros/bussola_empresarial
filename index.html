@@ -678,9 +678,9 @@
                                 color: '#fff',
                                 backdropColor: 'rgba(0, 0, 0, 0.7)',
                                 beginAtZero: true,
-                                min: 0, // Inicia em 0 para mostrar o centro, mas o primeiro valor significativo é 1
-                                max: 4, // **Ajustado para o máximo de 4 pontos**
-                                stepSize: 1, // **Passo de 1 em 1 para a escala 1-4**
+                                min: 0, // **Inicia explicitamente em 0**
+                                max: 4, 
+                                stepSize: 1, 
                                 showLabelBackdrop: true,
                                 font: {
                                     size: 10
@@ -710,7 +710,7 @@
                         tooltip: {
                             callbacks: {
                                 label: function (context) {
-                                    // Mostra o rótulo e o valor da pontuação (1-4)
+                                    // Mostra o rótulo e o valor da pontuação (0-4)
                                     return `${context.label}: ${context.parsed.r}`;
                                 }
                             }
