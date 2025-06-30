@@ -426,7 +426,7 @@
                 opcoes: [
                     { texto: "Abundante", valor: 4 },
                     { texto: "Alucinante", valor: 3 },
-                    { texto: "Tense", valor: 2 },
+                    { texto: "Tenso", valor: 2 },
                     { texto: "Miserável", valor: 1 }
                 ]
             },
@@ -1009,7 +1009,7 @@
 
                 const categoria = perguntas[index];
                 // O texto da "pergunta" é o nome da categoria
-                let html = `<p><strong>${index + 1}/${perguntas.length}. Selecione a opção que melhor descreve a dimensão "${categoria.categoria}":</strong></p>`;
+                let html = `<p><strong>${index + 1}/${perguntas.length}. Selecione a opção que melhor descreve a sua empresa na questão de"${categoria.categoria}":</strong></p>`;
 
                 categoria.opcoes.forEach((opcao, idx) => {
                     // Adiciona um ID único para o input de rádio e o associa ao label
